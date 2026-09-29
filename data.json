@@ -1,0 +1,24 @@
+{
+  "categories": [
+    {
+      "id": "cat_daily",
+      "name": "日常事务",
+      "color": "#4A90D9"
+    },
+    {
+      "id": "cat_newlife",
+      "name": "newlife灵感",
+      "color": "#FF6B9D"
+    },
+    {
+      "id": "cat_draft",
+      "name": "日程草稿箱",
+      "color": "#8E8E93"
+    }
+  ],
+  "todos": [],
+  "assignments": {},
+  "diary": {},
+  "completedLog": {},
+  "lastModified": 1790663818456
+}
