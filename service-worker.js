@@ -1,5 +1,5 @@
 // Service Worker - 日程管理 PWA
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `schedule-app-${CACHE_VERSION}`;
 
 // 需要缓存的静态资源列表
@@ -49,7 +49,7 @@ self.addEventListener('activate', (event) => {
 });
 
 // ===== 请求拦截 =====
-self.addEventListener('fetch', (event) => {  }
+self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   if (!event.request.url.startsWith('http')) return;
 
