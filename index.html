@@ -968,14 +968,18 @@ function renderLibTodos() {
 
   todos.forEach(t => {
     const color = getCatColor(t.catId);
+    const rec = store.recurring.find(r => r.todoId === t.id);
+    const recBadge = rec ? `<span class="rec-badge" title="${recLabel(rec)}">🔁</span>` : '';
     const el = document.createElement('div');
     el.className = 'lib-todo-item';
     el.innerHTML = `
       <div class="todo-cat-dot" style="background:${color}"></div>
-      <span class="todo-title ${t.done?'done':''}">${t.title}</span>
+      <span class="todo-title-r ${t.done?'done':''}">${t.title}</span>
+      ${recBadge}
       <div class="lib-todo-actions">
         <button class="edit-btn" onclick="event.stopPropagation();showEditTodoModal('${t.id}')">编辑</button>
         <button class="del-btn" onclick="event.stopPropagation();deleteTodo('${t.id}')">删除</button>
+        <button class="rec-btn" onclick="event.stopPropagation();showRecurrenceModal('${t.id}')">⋯</button>
       </div>`;
 
     // Click on todo item to toggle done
@@ -1065,16 +1069,28 @@ function deleteCategory(catId) {
 function showEditTodoModal(tid) {
   const todo = store.todos.find(t => t.id === tid);
   if (!todo) return;
+  const rec = store.recurring.find(r => r.todoId === tid);
+  const recInfo = rec ? `<div style="margin-top:8px;font-size:12px;color:var(--primary)">🔁 ${recLabel(rec)} · <span style="cursor:pointer;text-decoration:underline" onclick="removeRecurrence('${tid}');closeModal()">取消重复</span></div>` : '';
   showModal('编辑 Todo', 'Todo 内容', name => {
     todo.title = name;
     save(); renderLibTodos(); renderWeekPanel();
     showToast('已更新');
   });
   document.getElementById('modalInput').value = todo.title;
+  // 在输入框下方插入重复信息
+  if (recInfo) {
+    const customArea = document.getElementById('modalCustom') || (() => {
+      const c = document.createElement('div'); c.id = 'modalCustom';
+      document.getElementById('modalBody').appendChild(c); return c;
+    })();
+    customArea.innerHTML = recInfo;
+    customArea.style.display = 'block';
+  }
 }
 
 function deleteTodo(tid) {
   store.todos = store.todos.filter(t => t.id !== tid);
+  store.recurring = store.recurring.filter(r => r.todoId !== tid);
   Object.keys(store.assignments).forEach(k => {
     store.assignments[k] = store.assignments[k].filter(id => id !== tid);
   });
